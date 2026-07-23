@@ -7,7 +7,7 @@ import pandas as pd
 # -----------------------------------------------------------------------------
 st.set_page_config(
     page_title="Aplikasi Pembelajaran Matriks Interaktif",
-    page_page_icon="🔢",
+    page_icon="🔢",
     layout="wide"
 )
 
@@ -133,7 +133,7 @@ elif menu == "🧮 Lab Simulasi Interaktif":
 
     if op == "Penjumlahan (A + B)":
         C = A + B
-        st.latex(rf"\begin{{pmatrix}} {a11} & {a12} \\ {a21} & {a22} \end{pmatrix} + \begin{{pmatrix}} {b11} & {b12} \\ {b21} & {b22} \end{{pmatrix}} = \begin{{pmatrix}} {C[0,0]} & {C[0,1]} \\ {C[1,0]} & {C[1,1]} \end{{pmatrix}}")
+        st.latex(rf"\begin{{pmatrix}} {a11} & {a12} \\ {a21} & {a22} \end{{pmatrix}} + \begin{{pmatrix}} {b11} & {b12} \\ {b21} & {b22} \end{{pmatrix}} = \begin{{pmatrix}} {C[0,0]} & {C[0,1]} \\ {C[1,0]} & {C[1,1]} \end{{pmatrix}}")
     elif op == "Pengurangan (A - B)":
         C = A - B
         st.latex(rf"\begin{{pmatrix}} {a11} & {a12} \\ {a21} & {a22} \end{{pmatrix}} - \begin{{pmatrix}} {b11} & {b12} \\ {b21} & {b22} \end{{pmatrix}} = \begin{{pmatrix}} {C[0,0]} & {C[0,1]} \\ {C[1,0]} & {C[1,1]} \end{{pmatrix}}")
