@@ -1,226 +1,267 @@
 import streamlit as st
-import pandas as pd
 import numpy as np
+import pandas as pd
 
 # -----------------------------------------------------------------------------
-# 1. KONFIGURASI HALAMAN & STATE INITIALIZATION
+# KONFIGURASI HALAMAN
 # -----------------------------------------------------------------------------
 st.set_page_config(
-    page_title="Petualangan Matematika Interaktif - Matriks",
-    page_icon="🧮",
+    page_title="Aplikasi Pembelajaran Matriks Interaktif",
+    page_page_icon="🔢",
     layout="wide"
 )
 
-# Inisialisasi Gamifikasi & Skor XP
-if 'score_mat' not in st.session_state:
+# Initialize Session State untuk Score & Badges
+if "score_mat" not in st.session_state:
     st.session_state.score_mat = 0
-if 'badge_mat' not in st.session_state:
-    st.session_state.badge_mat = "Novice Mathematician 🐣"
+if "badge_mat" not in st.session_state:
+    st.session_state.badge_mat = "Pemula Matriks 🐣"
 
 def update_badge_mat():
-    if st.session_state.score_mat >= 130:
-        st.session_state.badge_mat = "Matrix Master 🧙‍♂️"
-    elif st.session_state.score_mat >= 90:
-        st.session_state.badge_mat = "Algebra Knight ⚔️"
-    elif st.session_state.score_mat >= 50:
-        st.session_state.badge_mat = "Math Explorer 🧭"
+    score = st.session_state.score_mat
+    if score >= 130:
+        st.session_state.badge_mat = "Master Matriks 🏆"
+    elif score >= 90:
+        st.session_state.badge_mat = "Ahli Matriks 🥈"
+    elif score >= 50:
+        st.session_state.badge_mat = "Penjelajah Matriks 🥉"
     else:
-        st.session_state.badge_mat = "Novice Mathematician 🐣"
+        st.session_state.badge_mat = "Pemula Matriks 🐣"
 
 # -----------------------------------------------------------------------------
-# 2. SIDEBAR (GAMIFICATION & NAVIGASI)
+# SIDEBAR NAVIGATION & PROFILE
 # -----------------------------------------------------------------------------
-st.sidebar.title("🎮 Status Profil Siswa")
-st.sidebar.info("**Pemain:** Pembelajar Matematika")
-st.sidebar.metric(label="Total XP (Poin)", value=f"{st.session_state.score_mat} XP")
-st.sidebar.markdown(f"**Gelar:** `{st.session_state.badge_mat}`")
-st.sidebar.divider()
-
+st.sidebar.title("📌 Navigasi Modul")
 menu = st.sidebar.radio(
-    "Navigasi Zona Belajar:",
+    "Pilih Zona Pembelajaran:",
     [
-        "🏠 Beranda Utama",
-        "1. Konsep Dasar & Contoh Nyata",
-        "2. Simulasi Kalkulator Matriks",
+        "📘 Modul Materi & Konsep",
+        "🧮 Lab Simulasi Interaktif",
         "🎯 Kuis Evaluasi (15 Soal PG)"
     ]
 )
 
-# -----------------------------------------------------------------------------
-# ZONA 0: BERANDA UTAMA
-# -----------------------------------------------------------------------------
-if menu == "🏠 Beranda Utama":
-    st.title("🧮 Petualangan Matematika: Operasi Matriks Interaktif")
-    st.write(
-        "Selamat datang di media pembelajaran matematika! Aplikasi ini dirancang untuk "
-        "membantu Anda menguasai **Operasi Matriks** melalui konsep nyata, kalkulator visual interaktif, dan kuis berhadiah XP."
-    )
-
-    st.subheader("🎯 Capaian Tujuan Pembelajaran (TP):")
-    st.success("✅ **Peserta didik mampu menentukan hasil operasi matriks (penjumlahan, pengurangan, dan perkalian matriks) dengan benar.**")
-
-    st.divider()
-    col1, col2, col3 = st.columns(3)
-    with col1:
-        st.info("➕ **1. Penjumlahan Matriks**\n\nMenjumlahkan elemen-elemen yang seletak pada matriks berordo sama.")
-    with col2:
-        st.warning("➖ **2. Pengurangan Matriks**\n\nMengurangkan elemen-elemen yang seletak pada matriks berordo sama.")
-    with col3:
-        st.error("✖️ **3. Perkalian Matriks**\n\nPerkalian skalar dan perkalian antar-matriks (Baris × Kolom).")
-
-    st.divider()
-    st.info("💡 **Petunjuk:** Silakan pilih menu di sidebar kiri untuk mulai belajar!")
+st.sidebar.divider()
+st.sidebar.subheader("👤 Profil Pembelajar")
+st.sidebar.metric("Total Skor (XP)", f"{st.session_state.score_mat} / 150")
+st.sidebar.info(f"Lencana: **{st.session_state.badge_mat}**")
 
 # -----------------------------------------------------------------------------
-# ZONA 1: KONSEP DASAR & CONTOH NYATA
+# ZONA 1: MODUL MATERI & KONSEP
 # -----------------------------------------------------------------------------
-elif menu == "1. Konsep Dasar & Contoh Nyata":
-    st.header("📚 Misi 1: Memahami Konsep Operasi Matriks")
-    st.write("Matriks adalah susunan bilangan berbentuk persegi atau persegi panjang yang diatur dalam baris dan kolom.")
+if menu == "📘 Modul Materi & Konsep":
+    st.header("📘 Modul Operasi Matriks")
+    st.write("Pelajari konsep dasar operasi matriks sebelum mencoba simulasi dan kuis!")
 
-    st.subheader("1. Ringkasan Aturan Operasi Matriks")
-    
-    matriks_data = {
-        "Jenis Operasi": [
-            "Penjumlahan Matriks",
-            "Pengurangan Matriks",
-            "Perkalian Skalar",
-            "Perkalian Antar-Matriks"
-        ],
-        "Syarat Operasi": [
-            "Ordo kedua matriks harus SAMA (misal: sama-sama 2x2).",
-            "Ordo kedua matriks harus SAMA.",
-            "Dapat dilakukan pada matriks ordo berapapun.",
-            "Jumlah KOLOM matriks pertama = Jumlah BARIS matriks kedua."
-        ],
-        "Cara Penyelesaian": [
-            "Jumlahkan elemen yang SELETAK (posisi baris dan kolomnya sama).",
-            "Kurangkan elemen yang SELETAK.",
-            "Kalikan setiap elemen matriks dengan angka skalar k.",
-            "Kalikan elemen BARIS matriks A dengan KOLOM matriks B, lalu jumlahkan."
-        ],
-        "Contoh Penerapan Nyata": [
-            "Menggabungkan data stok barang dari dua cabang toko yang berbeda.",
-            "Menghitung selisih penjualan bulan ini dengan bulan lalu untuk setiap barang.",
-            "Menghitung total harga setelah kenaikan persen/kelipatan harga barang.",
-            "Menghitung total biaya belanja barang berdasarkan kuantitas dan harga satuan."
-        ]
-    }
-    df_mat = pd.DataFrame(matriks_data)
-    st.dataframe(df_mat, use_container_width=True, hide_index=True)
-
-    st.divider()
-    st.subheader("2. Formulasi Matematis")
-    
-    st.markdown("#### a. Penjumlahan & Pengurangan (Ordo 2x2)")
-    st.latex(r'''
-    \begin{pmatrix} a & b \\ c & d \end{pmatrix} \pm \begin{pmatrix} e & f \\ g & h \end{pmatrix} = \begin{pmatrix} a \pm e & b \pm f \\ c \pm g & d \pm h \end{pmatrix}
-    ''')
-
-    st.markdown("#### b. Perkalian Antar-Matriks (Baris × Kolom)")
-    st.latex(r'''
-    \begin{pmatrix} a & b \\ c & d \end{pmatrix} \times \begin{pmatrix} e & f \\ g & h \end{pmatrix} = \begin{pmatrix} (a\cdot e + b\cdot g) & (a\cdot f + b\cdot h) \\ (c\cdot e + d\cdot g) & (c\cdot f + d\cdot h) \end{pmatrix}
-    ''')
-
-# -----------------------------------------------------------------------------
-# ZONA 2: SIMULASI KALKULATOR MATRIKS INTERAKTIF
-# -----------------------------------------------------------------------------
-elif menu == "2. Simulasi Kalkulator Matriks":
-    st.header("🧮 Misi 2: Simulasi Kalkulator Matriks Interaktif")
-    st.write("Masukkan nilai elemen-elemen Matriks A dan Matriks B di bawah ini untuk melihat proses perhitungannya secara langsung!")
-
-    st.subheader("1. Input Elemen Matriks A dan B (Ordo 2x2)")
-    
-    col_a, col_b = st.columns(2)
-    
-    with col_a:
-        st.markdown("### 🟦 Matriks A")
-        c1, c2 = st.columns(2)
-        a11 = c1.number_input("A[1,1]", value=3, key="a11")
-        a12 = c2.number_input("A[1,2]", value=2, key="a12")
-        a21 = c1.number_input("A[2,1]", value=1, key="a21")
-        a22 = c2.number_input("A[2,2]", value=4, key="a22")
-
-    with col_b:
-        st.markdown("### 🟩 Matriks B")
-        c3, c4 = st.columns(2)
-        b11 = c3.number_input("B[1,1]", value=5, key="b11")
-        b12 = c4.number_input("B[1,2]", value=1, key="b12")
-        b21 = c3.number_input("B[2,1]", value=2, key="b21")
-        b22 = c4.number_input("B[2,2]", value=3, key="b22")
-
-    mat_A = np.array([[a11, a12], [a21, a22]])
-    mat_B = np.array([[b11, b12], [b21, b22]])
-
-    st.divider()
-    st.subheader("2. Hasil Operasi Matriks")
-
-    tab1, tab2, tab3 = st.tabs(["➕ Penjumlahan (A + B)", "➖ Pengurangan (A - B)", "✖️ Perkalian (A × B)"])
+    tab1, tab2, tab3, tab4 = st.tabs([
+        "1. Penjumlahan & Pengurangan",
+        "2. Perkalian Skalar",
+        "3. Perkalian Matriks",
+        "4. Transpose & Sifat"
+    ])
 
     with tab1:
-        st.markdown("### Hasil Penjumlahan: Matriks A + Matriks B")
-        res_add = mat_A + mat_B
-        
-        st.write("**Langkah Perhitungan:**")
-        st.latex(f'''
-        \\begin{{pmatrix}} {a11} & {a12} \\\\ {a21} & {a22} \\end{{pmatrix}} + \\begin{{pmatrix}} {b11} & {b12} \\\\ {b21} & {b22} \\end{{pmatrix}} = \\begin{{pmatrix}} {a11}+{b11} & {a12}+{b12} \\\\ {a21}+{b21} & {a22}+{b22} \\end{{pmatrix}}
-        ''')
-        
-        st.success(f"**Hasil Akhir:**\n\n [[{res_add[0,0]}, {res_add[0,1]}], [{res_add[1,0]}, {res_add[1,1]}]]")
+        st.subheader("Penjumlahan dan Pengurangan Matriks")
+        st.markdown("""
+        Dua matriks dapat dijumlahkan atau dikurangi **hanya jika memiliki ordo (ukuran) yang sama**.
+        Proses dilakukan dengan menjumlahkan/mengurangi elemen-elemen yang seletak.
+        """)
+        st.latex(r"""
+        \begin{pmatrix} a & b \\ c & d \end{pmatrix} \pm \begin{pmatrix} e & f \\ g & h \end{pmatrix} 
+        = \begin{pmatrix} a \pm e & b \pm f \\ c \pm g & d \pm h \end{pmatrix}
+        """)
 
     with tab2:
-        st.markdown("### Hasil Pengurangan: Matriks A - Matriks B")
-        res_sub = mat_A - mat_B
-        
-        st.write("**Langkah Perhitungan:**")
-        st.latex(f'''
-        \\begin{{pmatrix}} {a11} & {a12} \\\\ {a21} & {a22} \\end{{pmatrix}} - \\begin{{pmatrix}} {b11} & {b12} \\\\ {b21} & {b22} \\end{{pmatrix}} = \\begin{{pmatrix}} {a11}-{b11} & {a12}-{b12} \\\\ {a21}-{b21} & {a22}-{b22} \\end{{pmatrix}}
-        ''')
-        
-        st.warning(f"**Hasil Akhir:**\n\n [[{res_sub[0,0]}, {res_sub[0,1]}], [{res_sub[1,0]}, {res_sub[1,1]}]]")
+        st.subheader("Perkalian Matriks dengan Skalar")
+        st.markdown("""
+        Perkalian skalar dilakukan dengan mengalikan sebuah bilangan real ($k$) ke **setiap elemen** di dalam matriks.
+        """)
+        st.latex(r"""
+        k \times \begin{pmatrix} a & b \\ c & d \end{pmatrix} = \begin{pmatrix} k \cdot a & k \cdot b \\ k \cdot c & k \cdot d \end{pmatrix}
+        """)
 
     with tab3:
-        st.markdown("### Hasil Perkalian: Matriks A × Matriks B")
-        res_mul = np.dot(mat_A, mat_B)
-        
-        st.write("**Langkah Perhitungan (Baris × Kolom):**")
-        st.latex(f'''
-        \\begin{{pmatrix}} {a11} & {a12} \\\\ {a21} & {a22} \\end{{pmatrix}} \\times \\begin{{pmatrix}} {b11} & {b12} \\\\ {b21} & {b22} \\end{{pmatrix}} = \\begin{{pmatrix}} ({a11}\\cdot{b11} + {a12}\\cdot{b21}) & ({a11}\\cdot{b12} + {a12}\\cdot{b22}) \\\\ ({a21}\\cdot{b11} + {a22}\\cdot{b21}) & ({a21}\\cdot{b12} + {a22}\\cdot{b22}) \\end{{pmatrix}}
-        ''')
-        
-        st.info(f"**Hasil Akhir:**\n\n [[{res_mul[0,0]}, {res_mul[0,1]}], [{res_mul[1,0]}, {res_mul[1,1]}]]")
+        st.subheader("Perkalian Matriks dengan Matriks")
+        st.markdown("""
+        Syarat perkalian matriks $A \times B$: **Jumlah kolom matriks A harus sama dengan jumlah baris matriks B**.
+        Perkalian dilakukan dengan mengalikan elemen **Baris pada Matriks A** dengan **Kolom pada Matriks B**.
+        """)
+        st.latex(r"""
+        \begin{pmatrix} a & b \\ c & d \end{pmatrix} \times \begin{pmatrix} e & f \\ g & h \end{pmatrix}
+        = \begin{pmatrix} (ae + bg) & (af + bh) \\ (ce + dg) & (cf + dh) \end{pmatrix}
+        """)
+
+    with tab4:
+        st.subheader("Transpose Matriks")
+        st.markdown("""
+        Transpose matriks ($A^T$) dilakukan dengan **menukar posisi baris menjadi kolom** dan sebaliknya.
+        """)
+        st.latex(r"""
+        A = \begin{pmatrix} a & b \\ c & d \end{pmatrix} \implies A^T = \begin{pmatrix} a & c \\ b & d \end{pmatrix}
+        """)
 
 # -----------------------------------------------------------------------------
-# ZONA 3: KUIS EVALUASI (15 SOAL PG)
+# ZONA 2: LAB SIMULASI INTERAKTIF
+# -----------------------------------------------------------------------------
+elif menu == "🧮 Lab Simulasi Interaktif":
+    st.header("🧮 Lab Simulasi Operasi Matriks Interaktif")
+    st.write("Ubah nilai elemen matriks dan amati hasilnya secara langsung!")
+
+    st.subheader("Input Elemen Matriks Ordo 2x2")
+    col_a, col_b = st.columns(2)
+
+    with col_a:
+        st.markdown("**Matriks A**")
+        a11 = st.number_input("A[1,1]", value=2, key="a11")
+        a12 = st.number_input("A[1,2]", value=3, key="a12")
+        a21 = st.number_input("A[2,1]", value=1, key="a21")
+        a22 = st.number_input("A[2,2]", value=4, key="a22")
+        A = np.array([[a11, a12], [a21, a22]])
+
+    with col_b:
+        st.markdown("**Matriks B**")
+        b11 = st.number_input("B[1,1]", value=1, key="b11")
+        b12 = st.number_input("B[1,2]", value=2, key="b12")
+        b21 = st.number_input("B[2,1]", value=3, key="b21")
+        b22 = st.number_input("B[2,2]", value=5, key="b22")
+        B = np.array([[b11, b12], [b21, b22]])
+
+    op = st.selectbox("Pilih Operasi Matriks:", ["Penjumlahan (A + B)", "Pengurangan (A - B)", "Perkalian Matriks (A x B)", "Perkalian Skalar (k x A)"])
+
+    st.divider()
+    st.subheader("Hasil Perhitungan & Tampilan Matriks")
+
+    if op == "Penjumlahan (A + B)":
+        C = A + B
+        st.latex(rf"\begin{{pmatrix}} {a11} & {a12} \\ {a21} & {a22} \end{pmatrix} + \begin{{pmatrix}} {b11} & {b12} \\ {b21} & {b22} \end{{pmatrix}} = \begin{{pmatrix}} {C[0,0]} & {C[0,1]} \\ {C[1,0]} & {C[1,1]} \end{{pmatrix}}")
+    elif op == "Pengurangan (A - B)":
+        C = A - B
+        st.latex(rf"\begin{{pmatrix}} {a11} & {a12} \\ {a21} & {a22} \end{{pmatrix}} - \begin{{pmatrix}} {b11} & {b12} \\ {b21} & {b22} \end{{pmatrix}} = \begin{{pmatrix}} {C[0,0]} & {C[0,1]} \\ {C[1,0]} & {C[1,1]} \end{{pmatrix}}")
+    elif op == "Perkalian Matriks (A x B)":
+        C = np.dot(A, B)
+        st.latex(rf"\begin{{pmatrix}} {a11} & {a12} \\ {a21} & {a22} \end{{pmatrix}} \times \begin{{pmatrix}} {b11} & {b12} \\ {b21} & {b22} \end{{pmatrix}} = \begin{{pmatrix}} {C[0,0]} & {C[0,1]} \\ {C[1,0]} & {C[1,1]} \end{{pmatrix}}")
+    elif op == "Perkalian Skalar (k x A)":
+        k = st.slider("Pilih Nilai Skalar (k):", -10, 10, 3)
+        C = k * A
+        st.latex(rf"{k} \times \begin{{pmatrix}} {a11} & {a12} \\ {a21} & {a22} \end{{pmatrix}} = \begin{{pmatrix}} {C[0,0]} & {C[0,1]} \\ {C[1,0]} & {C[1,1]} \end{{pmatrix}}")
+
+# -----------------------------------------------------------------------------
+# ZONA 3: KUIS EVALUASI MATRIKS (SOAL BERFORMAT MATRIKS VISUAL)
 # -----------------------------------------------------------------------------
 elif menu == "🎯 Kuis Evaluasi (15 Soal PG)":
     st.header("🎯 Kuis Evaluasi Matriks (15 Soal PG)")
+    st.write("Jawablah pertanyaan-pertanyaan berikut dengan memilih salah satu opsi jawaban yang benar!")
 
     questions = [
-        {"q": "1. Jika A = [[2, 3], [1, 4]] dan B = [[1, 2], [3, 5]], maka A + B adalah...", "options": ["[[3, 5], [4, 9]]", "[[1, 1], [-2, -1]]", "[[2, 6], [3, 20]]", "[[3, 1], [4, 9]]"], "answer": "[[3, 5], [4, 9]]"},
-        {"q": "2. Syarat utama dua buah matriks dapat dijumlahkan atau dikurangkan adalah...", "options": ["Mempunyai determinan yang sama", "Memiliki ordo yang sama", "Jumlah baris lebih banyak dari kolom", "Keduanya berupa matriks persegi"], "answer": "Memiliki ordo yang sama"},
-        {"q": "3. Jika A = [[5, 7], [2, 9]] dan B = [[3, 2], [1, 4]], maka hasil A - B adalah...", "options": ["[[8, 9], [3, 13]]", "[[2, 5], [1, 5]]", "[[2, 5], [1, -5]]", "[[15, 14], [2, 36]]"], "answer": "[[2, 5], [1, 5]]"},
-        {"q": "4. Jika k = 3 dan A = [[2, -1], [4, 0]], maka nilai dari kA adalah...", "options": ["[[6, -3], [12, 0]]", "[[5, 2], [7, 3]]", "[[6, -1], [12, 0]]", "[[2, -3], [4, 0]]"], "answer": "[[6, -3], [12, 0]]"},
-        {"q": "5. Syarat dua matriks A (ordo m x n) dan B (ordo p x q) dapat dikalikan (A x B) adalah...", "options": ["m = p", "n = p", "n = q", "m = q"], "answer": "n = p"},
-        {"q": "6. Jika A berordo 2x3 dan B berordo 3x4, maka hasil kali matriks A x B akan menghasilkan matriks berordo...", "options": ["2x3", "3x3", "2x4", "3x2"], "answer": "2x4"},
-        {"q": "7. Diketahui A = [[1, 2], [3, 4]] dan B = [[1, 0], [0, 1]]. Hasil A x B adalah...", "options": ["[[1, 0], [0, 4]]", "[[1, 2], [3, 4]]", "[[2, 2], [3, 5]]", "[[0, 0], [0, 0]]"], "answer": "[[1, 2], [3, 4]]"},
-        {"q": "8. Matriks B = [[1, 0], [0, 1]] pada soal nomor 7 dinamakan matriks...", "options": ["Nol", "Identitas", "Diagonalkan", "Skalar"], "answer": "Identitas"},
-        {"q": "9. Jika A = [[1, 2], [0, 1]] dan B = [[2, 0], [1, 3]], elemen baris 1 kolom 1 dari A x B adalah...", "options": ["4", "2", "3", "1"], "answer": "4"},
-        {"q": "10. Sifat perpangkatan/perkalian matriks pada umumnya adalah TIDAK komutatif, artinya...", "options": ["A + B ≠ B + A", "A x B ≠ B x A", "A - B = B - A", "kA ≠ Ak"], "answer": "A x B ≠ B x A"},
-        {"q": "11. Diketahui A = [[2, 1], [0, 3]]. Nilai A² (yaitu A x A) adalah...", "options": ["[[4, 1], [0, 9]]", "[[4, 5], [0, 9]]", "[[4, 3], [0, 9]]", "[[2, 2], [0, 6]]"], "answer": "[[4, 5], [0, 9]]"},
-        {"q": "12. Jika A = [[x, 4], [2, 1]] + [[3, 1], [1, 2]] = [[7, 5], [3, 3]], maka nilai x adalah...", "options": ["2", "3", "4", "5"], "answer": "4"},
-        {"q": "13. Transpose dari matriks P = [[1, 3], [2, 4]] adalah Pᵀ = ...", "options": ["[[1, 2], [3, 4]]", "[[4, 3], [2, 1]]", "[[1, 3], [2, 4]]", "[[3, 1], [4, 2]]"], "answer": "[[1, 2], [3, 4]]"},
-        {"q": "14. Jika A = [[2, 0], [0, 2]], maka 2A - A sama dengan...", "options": ["A", "2A", "Matriks Nol", "Matriks Identitas"], "answer": "A"},
-        {"q": "15. Dalam kehidupan sehari-hari, operasi perkalian matriks sangat berguna untuk...", "options": ["Menghitung total tagihan belanja barang dengan variasi harga", "Membagi kue sama rata", "Mengukur panjang jalan raya", "Menentukan jam keberangkatan bus"], "answer": "Menghitung total tagihan belanja barang dengan variasi harga"}
+        {
+            "q": "1. Hasil penjumlahan matriks berikut adalah:",
+            "latex_expr": r"\begin{pmatrix} 2 & 3 \\ 1 & 4 \end{pmatrix} + \begin{pmatrix} 1 & 2 \\ 3 & 5 \end{pmatrix} = \dots",
+            "options": ["\\begin{pmatrix} 3 & 5 \\ 4 & 9 \\end{pmatrix}", "\\begin{pmatrix} 1 & 1 \\ -2 & -1 \\end{pmatrix}", "\\begin{pmatrix} 2 & 6 \\ 3 & 20 \\end{pmatrix}", "\\begin{pmatrix} 3 & 1 \\ 4 & 9 \\end{pmatrix}"],
+            "answer": "\\begin{pmatrix} 3 & 5 \\ 4 & 9 \\end{pmatrix}"
+        },
+        {
+            "q": "2. Syarat utama dua buah matriks dapat dijumlahkan atau dikurangkan adalah...",
+            "latex_expr": None,
+            "options": ["Mempunyai determinan yang sama", "Memiliki ordo yang sama", "Jumlah baris lebih banyak dari kolom", "Keduanya berupa matriks persegi"],
+            "answer": "Memiliki ordo yang sama"
+        },
+        {
+            "q": "3. Hasil pengurangan matriks berikut adalah:",
+            "latex_expr": r"\begin{pmatrix} 5 & 7 \\ 2 & 9 \end{pmatrix} - \begin{pmatrix} 3 & 2 \\ 1 & 4 \end{pmatrix} = \dots",
+            "options": ["\\begin{pmatrix} 8 & 9 \\ 3 & 13 \\end{pmatrix}", "\\begin{pmatrix} 2 & 5 \\ 1 & 5 \\end{pmatrix}", "\\begin{pmatrix} 2 & 5 \\ 1 & -5 \\end{pmatrix}", "\\begin{pmatrix} 15 & 14 \\ 2 & 36 \\end{pmatrix}"],
+            "answer": "\\begin{pmatrix} 2 & 5 \\ 1 & 5 \\end{pmatrix}"
+        },
+        {
+            "q": "4. Jika k = 3, maka hasil perkalian skalar berikut adalah:",
+            "latex_expr": r"3 \times \begin{pmatrix} 2 & -1 \\ 4 & 0 \end{pmatrix} = \dots",
+            "options": ["\\begin{pmatrix} 6 & -3 \\ 12 & 0 \\end{pmatrix}", "\\begin{pmatrix} 5 & 2 \\ 7 & 3 \\end{pmatrix}", "\\begin{pmatrix} 6 & -1 \\ 12 & 0 \\end{pmatrix}", "\\begin{pmatrix} 2 & -3 \\ 4 & 0 \\end{pmatrix}"],
+            "answer": "\\begin{pmatrix} 6 & -3 \\ 12 & 0 \\end{pmatrix}"
+        },
+        {
+            "q": "5. Syarat dua matriks A (ordo m x n) dan B (ordo p x q) dapat dikalikan (A x B) adalah...",
+            "latex_expr": None,
+            "options": ["m = p", "n = p", "n = q", "m = q"],
+            "answer": "n = p"
+        },
+        {
+            "q": "6. Jika matriks A berordo 2x3 dan matriks B berordo 3x4, maka hasil kali matriks A x B akan menghasilkan matriks berordo...",
+            "latex_expr": None,
+            "options": ["2x3", "3x3", "2x4", "3x2"],
+            "answer": "2x4"
+        },
+        {
+            "q": "7. Hasil perkalian matriks dengan matriks identitas berikut adalah:",
+            "latex_expr": r"\begin{pmatrix} 1 & 2 \\ 3 & 4 \end{pmatrix} \times \begin{pmatrix} 1 & 0 \\ 0 & 1 \end{pmatrix} = \dots",
+            "options": ["\\begin{pmatrix} 1 & 0 \\ 0 & 4 \\end{pmatrix}", "\\begin{pmatrix} 1 & 2 \\ 3 & 4 \\end{pmatrix}", "\\begin{pmatrix} 2 & 2 \\ 3 & 5 \\end{pmatrix}", "\\begin{pmatrix} 0 & 0 \\ 0 & 0 \\end{pmatrix}"],
+            "answer": "\\begin{pmatrix} 1 & 2 \\ 3 & 4 \\end{pmatrix}"
+        },
+        {
+            "q": "8. Matriks berikut dinamakan sebagai matriks...",
+            "latex_expr": r"I = \begin{pmatrix} 1 & 0 \\ 0 & 1 \end{pmatrix}",
+            "options": ["Nol", "Identitas", "Diagonalkan", "Skalar"],
+            "answer": "Identitas"
+        },
+        {
+            "q": "9. Berapakah elemen baris 1 kolom 1 dari hasil perkalian matriks berikut:",
+            "latex_expr": r"\begin{pmatrix} 1 & 2 \\ 0 & 1 \end{pmatrix} \times \begin{pmatrix} 2 & 0 \\ 1 & 3 \end{pmatrix}",
+            "options": ["4", "2", "3", "1"],
+            "answer": "4"
+        },
+        {
+            "q": "10. Sifat perkalian matriks pada umumnya adalah TIDAK komutatif, yang berarti...",
+            "latex_expr": None,
+            "options": ["A + B ≠ B + A", "A × B ≠ B × A", "A - B = B - A", "k A ≠ A k"],
+            "answer": "A × B ≠ B × A"
+        },
+        {
+            "q": "11. Tentukan hasil dari A² (yaitu A × A) jika diketahui:",
+            "latex_expr": r"A = \begin{pmatrix} 2 & 1 \\ 0 & 3 \end{pmatrix}",
+            "options": ["\\begin{pmatrix} 4 & 1 \\ 0 & 9 \\end{pmatrix}", "\\begin{pmatrix} 4 & 5 \\ 0 & 9 \\end{pmatrix}", "\\begin{pmatrix} 4 & 3 \\ 0 & 9 \\end{pmatrix}", "\\begin{pmatrix} 2 & 2 \\ 0 & 6 \\end{pmatrix}"],
+            "answer": "\\begin{pmatrix} 4 & 5 \\ 0 & 9 \\end{pmatrix}"
+        },
+        {
+            "q": "12. Tentukan nilai x dari kesamaan matriks berikut:",
+            "latex_expr": r"\begin{pmatrix} x & 4 \\ 2 & 1 \end{pmatrix} + \begin{pmatrix} 3 & 1 \\ 1 & 2 \end{pmatrix} = \begin{pmatrix} 7 & 5 \\ 3 & 3 \end{pmatrix}",
+            "options": ["2", "3", "4", "5"],
+            "answer": "4"
+        },
+        {
+            "q": "13. Transpose dari matriks P berikut adalah:",
+            "latex_expr": r"P = \begin{pmatrix} 1 & 3 \\ 2 & 4 \end{pmatrix} \implies P^T = \dots",
+            "options": ["\\begin{pmatrix} 1 & 2 \\ 3 & 4 \\end{pmatrix}", "\\begin{pmatrix} 4 & 3 \\ 2 & 1 \\end{pmatrix}", "\\begin{pmatrix} 1 & 3 \\ 2 & 4 \\end{pmatrix}", "\\begin{pmatrix} 3 & 1 \\ 4 & 2 \\end{pmatrix}"],
+            "answer": "\\begin{pmatrix} 1 & 2 \\ 3 & 4 \\end{pmatrix}"
+        },
+        {
+            "q": "14. Jika A adalah matriks ordo 2x2, maka bentuk (2A - A) akan menghasilkan matriks...",
+            "latex_expr": None,
+            "options": ["A", "2A", "Matriks Nol", "Matriks Identitas"],
+            "answer": "A"
+        },
+        {
+            "q": "15. Dalam kehidupan nyata, perkalian matriks sangat berguna untuk...",
+            "latex_expr": None,
+            "options": ["Menghitung total tagihan belanja barang dengan variasi harga", "Membagi kue sama rata", "Mengukur panjang jalan raya", "Menentukan jam keberangkatan bus"],
+            "answer": "Menghitung total tagihan belanja barang dengan variasi harga"
+        }
     ]
 
     with st.form("quiz_matriks_form"):
         user_answers = []
         for i, q in enumerate(questions):
             st.markdown(f"**{q['q']}**")
-            ans = st.radio(f"Pilih jawaban nomor {i+1}:", q["options"], key=f"q_mat_{i}", index=None)
+            
+            # Tampilkan matriks asli jika ada
+            if q["latex_expr"]:
+                st.latex(q["latex_expr"])
+                
+            ans = st.radio(
+                f"Pilih jawaban nomor {i+1}:",
+                q["options"],
+                key=f"q_mat_{i}",
+                index=None
+            )
             user_answers.append(ans)
-            st.write("")
+            st.divider()
 
         submitted = st.form_submit_button("Kirim Jawaban & Hitung XP 🏆")
 
