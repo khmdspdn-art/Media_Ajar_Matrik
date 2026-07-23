@@ -1,6 +1,7 @@
 import streamlit as st
 import numpy as np
 import pandas as pd
+import re
 
 # -----------------------------------------------------------------------------
 # KONFIGURASI HALAMAN
@@ -27,6 +28,26 @@ def update_badge_mat():
         st.session_state.badge_mat = "Penjelajah Matriks 🥉"
     else:
         st.session_state.badge_mat = "Pemula Matriks 🐣"
+
+def clean_latex_to_text(latex_str):
+    """Mengubah format LaTeX matriks menjadi teks yang rapi untuk tabel rekapitulasi"""
+    if not latex_str or not isinstance(latex_str, str):
+        return "-"
+    
+    # Jika mengandung matriks pmatrix, format menjadi [a, b; c, d]
+    if r"\begin{pmatrix}" in latex_str:
+        content = re.search(r'\\begin\{pmatrix\}(.*?)\\end\{pmatrix\}', latex_str, re.DOTALL)
+        if content:
+            raw_matrix = content.group(1).strip()
+            # Ganti baris '\\' dengan '; ' dan '&' dengan ', '
+            rows = raw_matrix.split(r'\\')
+            formatted_rows = []
+            for row in rows:
+                elements = [e.strip() for e in row.split('&')]
+                formatted_rows.append("  ".join(elements))
+            return "[ " + " | ".join(formatted_rows) + " ]"
+            
+    return latex_str
 
 # -----------------------------------------------------------------------------
 # SIDEBAR NAVIGATION & PROFILE
@@ -146,7 +167,7 @@ elif menu == "🧮 Lab Simulasi Interaktif":
         st.latex(rf"{k} \times \begin{{pmatrix}} {a11} & {a12} \\ {a21} & {a22} \end{{pmatrix}} = \begin{{pmatrix}} {C[0,0]} & {C[0,1]} \\ {C[1,0]} & {C[1,1]} \end{{pmatrix}}")
 
 # -----------------------------------------------------------------------------
-# ZONA 3: KUIS EVALUASI MATRIKS (DENGAN RENDER LATEX PADA OPSI)
+# ZONA 3: KUIS EVALUASI MATRIKS
 # -----------------------------------------------------------------------------
 elif menu == "🎯 Kuis Evaluasi (15 Soal PG)":
     st.header("🎯 Kuis Evaluasi Matriks (15 Soal PG)")
@@ -262,14 +283,14 @@ elif menu == "🎯 Kuis Evaluasi (15 Soal PG)":
 
     with st.form("quiz_matriks_form"):
         user_answers = []
+        user_option_labels = []
+        
         for i, q in enumerate(questions):
             st.markdown(f"**{q['q']}**")
             
-            # Tampilkan ekspresi matriks soal
             if q["latex_expr"]:
                 st.latex(q["latex_expr"])
             
-            # Jika opsi berupa matriks, tampilkan tampilan matriks visual per opsi
             if q["is_latex_options"]:
                 st.caption("Pilihan Jawaban:")
                 cols = st.columns(len(q["options"]))
@@ -279,7 +300,6 @@ elif menu == "🎯 Kuis Evaluasi (15 Soal PG)":
                         st.markdown(label_option)
                         st.latex(opt)
                 
-                # Radio button untuk memilih Opsi A, B, C, D
                 opt_labels = [f"Opsi {chr(65+idx)}" for idx in range(len(q["options"]))]
                 ans_idx = st.radio(
                     f"Pilih jawaban nomor {i+1}:",
@@ -291,8 +311,10 @@ elif menu == "🎯 Kuis Evaluasi (15 Soal PG)":
                 
                 if ans_idx is not None:
                     user_answers.append(q["options"][ans_idx])
+                    user_option_labels.append(opt_labels[ans_idx])
                 else:
                     user_answers.append(None)
+                    user_option_labels.append(None)
             else:
                 ans = st.radio(
                     f"Pilih jawaban nomor {i+1}:",
@@ -301,6 +323,7 @@ elif menu == "🎯 Kuis Evaluasi (15 Soal PG)":
                     index=None
                 )
                 user_answers.append(ans)
+                user_option_labels.append(ans)
                 
             st.divider()
 
@@ -326,12 +349,30 @@ elif menu == "🎯 Kuis Evaluasi (15 Soal PG)":
             st.success(f"🎉 Kuis Selesai! Skor Anda: **{st.session_state.score_mat} / 150 XP**")
             st.info(f"Gelar Anda saat ini: **{st.session_state.badge_mat}**")
 
+            # Format tampilan jawaban agar mudah dibaca di tabel rekap
+            formatted_user_ans = []
+            formatted_correct_ans = []
+
+            for i, q in enumerate(questions):
+                # Format jawaban pengguna
+                if user_answers[i] is None:
+                    formatted_user_ans.append("Belum dijawab")
+                else:
+                    user_text = clean_latex_to_text(user_answers[i])
+                    label = f"({user_option_labels[i]}) " if q["is_latex_options"] else ""
+                    formatted_user_ans.append(f"{label}{user_text}")
+
+                # Format jawaban benar
+                correct_text = clean_latex_to_text(q["answer"])
+                formatted_correct_ans.append(correct_text)
+
             recap_data = {
                 "No": [i+1 for i in range(15)],
-                "Jawaban Anda": [str(ans) for ans in user_answers],
-                "Jawaban Benar": [q["answer"] for q in questions],
+                "Jawaban Anda": formatted_user_ans,
+                "Jawaban Benar": formatted_correct_ans,
                 "Status": ["✅ Benar" if user_answers[i] == questions[i]["answer"] else "❌ Salah" for i in range(15)]
             }
+            
             df_recap = pd.DataFrame(recap_data)
             st.subheader("📊 Rekapitulasi Hasil Jawaban")
             st.dataframe(df_recap, use_container_width=True, hide_index=True)
