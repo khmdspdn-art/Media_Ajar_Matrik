@@ -146,7 +146,7 @@ elif menu == "🧮 Lab Simulasi Interaktif":
         st.latex(rf"{k} \times \begin{{pmatrix}} {a11} & {a12} \\ {a21} & {a22} \end{{pmatrix}} = \begin{{pmatrix}} {C[0,0]} & {C[0,1]} \\ {C[1,0]} & {C[1,1]} \end{{pmatrix}}")
 
 # -----------------------------------------------------------------------------
-# ZONA 3: KUIS EVALUASI MATRIKS (SOAL BERFORMAT MATRIKS VISUAL)
+# ZONA 3: KUIS EVALUASI MATRIKS (DENGAN RENDER LATEX PADA OPSI)
 # -----------------------------------------------------------------------------
 elif menu == "🎯 Kuis Evaluasi (15 Soal PG)":
     st.header("🎯 Kuis Evaluasi Matriks (15 Soal PG)")
@@ -156,90 +156,105 @@ elif menu == "🎯 Kuis Evaluasi (15 Soal PG)":
         {
             "q": "1. Hasil penjumlahan matriks berikut adalah:",
             "latex_expr": r"\begin{pmatrix} 2 & 3 \\ 1 & 4 \end{pmatrix} + \begin{pmatrix} 1 & 2 \\ 3 & 5 \end{pmatrix} = \dots",
-            "options": ["\\begin{pmatrix} 3 & 5 \\ 4 & 9 \\end{pmatrix}", "\\begin{pmatrix} 1 & 1 \\ -2 & -1 \\end{pmatrix}", "\\begin{pmatrix} 2 & 6 \\ 3 & 20 \\end{pmatrix}", "\\begin{pmatrix} 3 & 1 \\ 4 & 9 \\end{pmatrix}"],
-            "answer": "\\begin{pmatrix} 3 & 5 \\ 4 & 9 \\end{pmatrix}"
+            "is_latex_options": True,
+            "options": [r"\begin{pmatrix} 3 & 5 \\ 4 & 9 \end{pmatrix}", r"\begin{pmatrix} 1 & 1 \\ -2 & -1 \end{pmatrix}", r"\begin{pmatrix} 2 & 6 \\ 3 & 20 \end{pmatrix}", r"\begin{pmatrix} 3 & 1 \\ 4 & 9 \end{pmatrix}"],
+            "answer": r"\begin{pmatrix} 3 & 5 \\ 4 & 9 \end{pmatrix}"
         },
         {
             "q": "2. Syarat utama dua buah matriks dapat dijumlahkan atau dikurangkan adalah...",
             "latex_expr": None,
+            "is_latex_options": False,
             "options": ["Mempunyai determinan yang sama", "Memiliki ordo yang sama", "Jumlah baris lebih banyak dari kolom", "Keduanya berupa matriks persegi"],
             "answer": "Memiliki ordo yang sama"
         },
         {
             "q": "3. Hasil pengurangan matriks berikut adalah:",
             "latex_expr": r"\begin{pmatrix} 5 & 7 \\ 2 & 9 \end{pmatrix} - \begin{pmatrix} 3 & 2 \\ 1 & 4 \end{pmatrix} = \dots",
-            "options": ["\\begin{pmatrix} 8 & 9 \\ 3 & 13 \\end{pmatrix}", "\\begin{pmatrix} 2 & 5 \\ 1 & 5 \\end{pmatrix}", "\\begin{pmatrix} 2 & 5 \\ 1 & -5 \\end{pmatrix}", "\\begin{pmatrix} 15 & 14 \\ 2 & 36 \\end{pmatrix}"],
-            "answer": "\\begin{pmatrix} 2 & 5 \\ 1 & 5 \\end{pmatrix}"
+            "is_latex_options": True,
+            "options": [r"\begin{pmatrix} 8 & 9 \\ 3 & 13 \end{pmatrix}", r"\begin{pmatrix} 2 & 5 \\ 1 & 5 \end{pmatrix}", r"\begin{pmatrix} 2 & 5 \\ 1 & -5 \end{pmatrix}", r"\begin{pmatrix} 15 & 14 \\ 2 & 36 \end{pmatrix}"],
+            "answer": r"\begin{pmatrix} 2 & 5 \\ 1 & 5 \end{pmatrix}"
         },
         {
             "q": "4. Jika k = 3, maka hasil perkalian skalar berikut adalah:",
             "latex_expr": r"3 \times \begin{pmatrix} 2 & -1 \\ 4 & 0 \end{pmatrix} = \dots",
-            "options": ["\\begin{pmatrix} 6 & -3 \\ 12 & 0 \\end{pmatrix}", "\\begin{pmatrix} 5 & 2 \\ 7 & 3 \\end{pmatrix}", "\\begin{pmatrix} 6 & -1 \\ 12 & 0 \\end{pmatrix}", "\\begin{pmatrix} 2 & -3 \\ 4 & 0 \\end{pmatrix}"],
-            "answer": "\\begin{pmatrix} 6 & -3 \\ 12 & 0 \\end{pmatrix}"
+            "is_latex_options": True,
+            "options": [r"\begin{pmatrix} 6 & -3 \\ 12 & 0 \end{pmatrix}", r"\begin{pmatrix} 5 & 2 \\ 7 & 3 \end{pmatrix}", r"\begin{pmatrix} 6 & -1 \\ 12 & 0 \end{pmatrix}", r"\begin{pmatrix} 2 & -3 \\ 4 & 0 \end{pmatrix}"],
+            "answer": r"\begin{pmatrix} 6 & -3 \\ 12 & 0 \end{pmatrix}"
         },
         {
             "q": "5. Syarat dua matriks A (ordo m x n) dan B (ordo p x q) dapat dikalikan (A x B) adalah...",
             "latex_expr": None,
+            "is_latex_options": False,
             "options": ["m = p", "n = p", "n = q", "m = q"],
             "answer": "n = p"
         },
         {
             "q": "6. Jika matriks A berordo 2x3 dan matriks B berordo 3x4, maka hasil kali matriks A x B akan menghasilkan matriks berordo...",
             "latex_expr": None,
+            "is_latex_options": False,
             "options": ["2x3", "3x3", "2x4", "3x2"],
             "answer": "2x4"
         },
         {
             "q": "7. Hasil perkalian matriks dengan matriks identitas berikut adalah:",
             "latex_expr": r"\begin{pmatrix} 1 & 2 \\ 3 & 4 \end{pmatrix} \times \begin{pmatrix} 1 & 0 \\ 0 & 1 \end{pmatrix} = \dots",
-            "options": ["\\begin{pmatrix} 1 & 0 \\ 0 & 4 \\end{pmatrix}", "\\begin{pmatrix} 1 & 2 \\ 3 & 4 \\end{pmatrix}", "\\begin{pmatrix} 2 & 2 \\ 3 & 5 \\end{pmatrix}", "\\begin{pmatrix} 0 & 0 \\ 0 & 0 \\end{pmatrix}"],
-            "answer": "\\begin{pmatrix} 1 & 2 \\ 3 & 4 \\end{pmatrix}"
+            "is_latex_options": True,
+            "options": [r"\begin{pmatrix} 1 & 0 \\ 0 & 4 \end{pmatrix}", r"\begin{pmatrix} 1 & 2 \\ 3 & 4 \end{pmatrix}", r"\begin{pmatrix} 2 & 2 \\ 3 & 5 \end{pmatrix}", r"\begin{pmatrix} 0 & 0 \\ 0 & 0 \end{pmatrix}"],
+            "answer": r"\begin{pmatrix} 1 & 2 \\ 3 & 4 \end{pmatrix}"
         },
         {
             "q": "8. Matriks berikut dinamakan sebagai matriks...",
             "latex_expr": r"I = \begin{pmatrix} 1 & 0 \\ 0 & 1 \end{pmatrix}",
+            "is_latex_options": False,
             "options": ["Nol", "Identitas", "Diagonalkan", "Skalar"],
             "answer": "Identitas"
         },
         {
             "q": "9. Berapakah elemen baris 1 kolom 1 dari hasil perkalian matriks berikut:",
             "latex_expr": r"\begin{pmatrix} 1 & 2 \\ 0 & 1 \end{pmatrix} \times \begin{pmatrix} 2 & 0 \\ 1 & 3 \end{pmatrix}",
+            "is_latex_options": False,
             "options": ["4", "2", "3", "1"],
             "answer": "4"
         },
         {
             "q": "10. Sifat perkalian matriks pada umumnya adalah TIDAK komutatif, yang berarti...",
             "latex_expr": None,
+            "is_latex_options": False,
             "options": ["A + B ≠ B + A", "A × B ≠ B × A", "A - B = B - A", "k A ≠ A k"],
             "answer": "A × B ≠ B × A"
         },
         {
             "q": "11. Tentukan hasil dari A² (yaitu A × A) jika diketahui:",
             "latex_expr": r"A = \begin{pmatrix} 2 & 1 \\ 0 & 3 \end{pmatrix}",
-            "options": ["\\begin{pmatrix} 4 & 1 \\ 0 & 9 \\end{pmatrix}", "\\begin{pmatrix} 4 & 5 \\ 0 & 9 \\end{pmatrix}", "\\begin{pmatrix} 4 & 3 \\ 0 & 9 \\end{pmatrix}", "\\begin{pmatrix} 2 & 2 \\ 0 & 6 \\end{pmatrix}"],
-            "answer": "\\begin{pmatrix} 4 & 5 \\ 0 & 9 \\end{pmatrix}"
+            "is_latex_options": True,
+            "options": [r"\begin{pmatrix} 4 & 1 \\ 0 & 9 \end{pmatrix}", r"\begin{pmatrix} 4 & 5 \\ 0 & 9 \end{pmatrix}", r"\begin{pmatrix} 4 & 3 \\ 0 & 9 \end{pmatrix}", r"\begin{pmatrix} 2 & 2 \\ 0 & 6 \end{pmatrix}"],
+            "answer": r"\begin{pmatrix} 4 & 5 \\ 0 & 9 \end{pmatrix}"
         },
         {
             "q": "12. Tentukan nilai x dari kesamaan matriks berikut:",
             "latex_expr": r"\begin{pmatrix} x & 4 \\ 2 & 1 \end{pmatrix} + \begin{pmatrix} 3 & 1 \\ 1 & 2 \end{pmatrix} = \begin{pmatrix} 7 & 5 \\ 3 & 3 \end{pmatrix}",
+            "is_latex_options": False,
             "options": ["2", "3", "4", "5"],
             "answer": "4"
         },
         {
             "q": "13. Transpose dari matriks P berikut adalah:",
             "latex_expr": r"P = \begin{pmatrix} 1 & 3 \\ 2 & 4 \end{pmatrix} \implies P^T = \dots",
-            "options": ["\\begin{pmatrix} 1 & 2 \\ 3 & 4 \\end{pmatrix}", "\\begin{pmatrix} 4 & 3 \\ 2 & 1 \\end{pmatrix}", "\\begin{pmatrix} 1 & 3 \\ 2 & 4 \\end{pmatrix}", "\\begin{pmatrix} 3 & 1 \\ 4 & 2 \\end{pmatrix}"],
-            "answer": "\\begin{pmatrix} 1 & 2 \\ 3 & 4 \\end{pmatrix}"
+            "is_latex_options": True,
+            "options": [r"\begin{pmatrix} 1 & 2 \\ 3 & 4 \end{pmatrix}", r"\begin{pmatrix} 4 & 3 \\ 2 & 1 \end{pmatrix}", r"\begin{pmatrix} 1 & 3 \\ 2 & 4 \end{pmatrix}", r"\begin{pmatrix} 3 & 1 \\ 4 & 2 \end{pmatrix}"],
+            "answer": r"\begin{pmatrix} 1 & 2 \\ 3 & 4 \end{pmatrix}"
         },
         {
             "q": "14. Jika A adalah matriks ordo 2x2, maka bentuk (2A - A) akan menghasilkan matriks...",
             "latex_expr": None,
+            "is_latex_options": False,
             "options": ["A", "2A", "Matriks Nol", "Matriks Identitas"],
             "answer": "A"
         },
         {
             "q": "15. Dalam kehidupan nyata, perkalian matriks sangat berguna untuk...",
             "latex_expr": None,
+            "is_latex_options": False,
             "options": ["Menghitung total tagihan belanja barang dengan variasi harga", "Membagi kue sama rata", "Mengukur panjang jalan raya", "Menentukan jam keberangkatan bus"],
             "answer": "Menghitung total tagihan belanja barang dengan variasi harga"
         }
@@ -250,17 +265,43 @@ elif menu == "🎯 Kuis Evaluasi (15 Soal PG)":
         for i, q in enumerate(questions):
             st.markdown(f"**{q['q']}**")
             
-            # Tampilkan matriks asli jika ada
+            # Tampilkan ekspresi matriks soal
             if q["latex_expr"]:
                 st.latex(q["latex_expr"])
+            
+            # Jika opsi berupa matriks, tampilkan tampilan matriks visual per opsi
+            if q["is_latex_options"]:
+                st.caption("Pilihan Jawaban:")
+                cols = st.columns(len(q["options"]))
+                for idx, opt in enumerate(q["options"]):
+                    with cols[idx]:
+                        label_option = f"**({chr(65+idx)})**"
+                        st.markdown(label_option)
+                        st.latex(opt)
                 
-            ans = st.radio(
-                f"Pilih jawaban nomor {i+1}:",
-                q["options"],
-                key=f"q_mat_{i}",
-                index=None
-            )
-            user_answers.append(ans)
+                # Radio button untuk memilih Opsi A, B, C, D
+                opt_labels = [f"Opsi {chr(65+idx)}" for idx in range(len(q["options"]))]
+                ans_idx = st.radio(
+                    f"Pilih jawaban nomor {i+1}:",
+                    range(len(opt_labels)),
+                    format_func=lambda x: opt_labels[x],
+                    key=f"q_mat_{i}",
+                    index=None
+                )
+                
+                if ans_idx is not None:
+                    user_answers.append(q["options"][ans_idx])
+                else:
+                    user_answers.append(None)
+            else:
+                ans = st.radio(
+                    f"Pilih jawaban nomor {i+1}:",
+                    q["options"],
+                    key=f"q_mat_{i}",
+                    index=None
+                )
+                user_answers.append(ans)
+                
             st.divider()
 
         submitted = st.form_submit_button("Kirim Jawaban & Hitung XP 🏆")
@@ -287,7 +328,7 @@ elif menu == "🎯 Kuis Evaluasi (15 Soal PG)":
 
             recap_data = {
                 "No": [i+1 for i in range(15)],
-                "Jawaban Anda": user_answers,
+                "Jawaban Anda": [str(ans) for ans in user_answers],
                 "Jawaban Benar": [q["answer"] for q in questions],
                 "Status": ["✅ Benar" if user_answers[i] == questions[i]["answer"] else "❌ Salah" for i in range(15)]
             }
